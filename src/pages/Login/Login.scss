@@ -1,0 +1,63 @@
+@use '../../scss/abstracts/' as *;
+
+.form {
+	display: grid;
+
+	&__wrapper {
+		background-color: var(--clr-primary-100);
+		padding: 3rem;
+		border-radius: 0.5rem;
+		font-family: var(--ff-primary);
+		width: min(50%, 500px);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
+		h1,
+		label,
+		input {
+			text-transform: capitalize;
+		}
+
+		.switch-form {
+			@include flex();
+			gap: 0.5rem;
+
+			button {
+				background: transparent;
+				border: none;
+				color: var(--clr-secondary-500);
+				font-weight: var(--fw-bold);
+				&:hover {
+					color: var(--clr-secondary-200);
+				}
+			}
+		}
+	}
+
+	label {
+		display: grid;
+		margin-top: 2rem;
+	}
+	input {
+		background: inherit;
+		transition: border-color 250ms ease;
+		border: 2px solid transparent;
+		border-bottom-color: var(--clr-primary-300);
+		border-radius: 0.25rem;
+		padding: 0.5rem;
+		font-size: 1.25rem;
+
+		&:focus {
+			// background: var(--clr-primary-300);
+			outline: none;
+			border-color: var(--clr-primary-300);
+		}
+		&[type='submit'] {
+			background: var(--clr-primary-500);
+			color: var(--clr-neutral-100);
+			margin-block: 2rem;
+		}
+	}
+}

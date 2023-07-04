@@ -18,8 +18,8 @@ body {
 
 body {
 	line-height: 1.5;
-	display: grid;
-	place-items: center;
+	background-image: url('./../assets/images/bg.svg');
+	background-size: cover;
 }
 
 a,
@@ -37,7 +37,8 @@ svg {
 	display: block;
 }
 
-button {
+button,
+input:is([type='button'], [type='submit'], [type='reset']) {
 	cursor: pointer;
 }
 

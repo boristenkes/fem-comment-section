@@ -1,10 +1,9 @@
 @use '../abstracts/' as *;
 
 .head-text {
-	// font-size: clamp();
+	font-size: 2rem;
 	font-family: var(--ff-heading);
-	font-weight: var(--fw-semibold);
-	text-align: center;
+	font-weight: var(--fw-bold);
 }
 
 .body-text {
