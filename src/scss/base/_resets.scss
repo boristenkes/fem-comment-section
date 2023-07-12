@@ -1,3 +1,5 @@
+@use '../../scss/abstracts/' as *;
+
 *,
 *::before,
 *::after {
@@ -18,8 +20,15 @@ body {
 
 body {
 	line-height: 1.5;
-	background-image: url('./../assets/images/bg.svg');
-	background-size: cover;
+	@include bg-img('./../assets/images/bg.svg', $attachment: fixed);
+}
+
+#root {
+	display: grid;
+	place-items: center;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding-block: 5rem;
 }
 
 a,

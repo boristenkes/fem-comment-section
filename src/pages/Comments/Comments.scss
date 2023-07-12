@@ -1,0 +1,147 @@
+@use '../../scss/abstracts/' as *;
+
+.comment-section {
+	--content-gap: 1rem;
+	display: grid;
+	gap: var(--content-gap);
+	font-family: var(--ff-primary);
+	width: min(100%, 700px);
+
+	.btn {
+		@include flex(center, center);
+		gap: 0.25rem;
+		// padding: 0.25rem;
+		border-radius: 0.25rem;
+		border: none;
+		font-weight: var(--fw-medium);
+		transition: background, color, border-color, 0.15s ease;
+
+		&[data-variant='text'] {
+			border: none;
+			background: none;
+
+			&[data-color='primary'] {
+				color: var(--clr-primary-500);
+
+				&:hover,
+				&:focus-visible {
+					color: var(--clr-primary-300);
+				}
+			}
+			&[data-color='danger'] {
+				color: var(--clr-secondary-500);
+
+				&:hover,
+				&:focus-visible {
+					color: var(--clr-secondary-200);
+				}
+			}
+		}
+		&[data-variant='contained'] {
+			border: 2px solid;
+
+			&[data-color='primary'] {
+				background: var(--clr-primary-500);
+				color: var(--clr-neutral-100);
+				padding: 0.5rem 1.75rem;
+				border-radius: 0.5rem;
+
+				&:hover,
+				&:focus-visible {
+					background: var(--clr-primary-300);
+				}
+			}
+		}
+
+		&[data-color='primary'] {
+			color: var(--clr-primary-500);
+		}
+	}
+
+	.comment {
+		@include flex($align: start);
+		gap: var(--content-gap);
+		background: var(--clr-neutral-100);
+		padding: 1.5rem;
+		border-radius: 0.5rem;
+
+		.mention {
+			color: var(--clr-primary-500);
+			font-weight: var(--fw-bold);
+			cursor: pointer;
+		}
+
+		&-upvotes {
+			@include flex($direction: column);
+			background: var(--clr-primary-200);
+			padding: 0.5rem;
+			border-radius: 0.25rem;
+			text-align: center;
+
+			&-button {
+				background: transparent;
+				color: var(--clr-primary-300);
+				font-size: 1.5rem;
+				font-weight: var(--fw-bold);
+				border: none;
+
+				&:hover {
+					color: var(--clr-primary-500);
+				}
+			}
+		}
+
+		&-content-wrapper {
+			flex: 1;
+		}
+
+		&-avatar {
+			border-radius: 50%;
+		}
+		&-username span {
+			background: var(--clr-primary-500);
+			font-weight: var(--fw-regular);
+			font-size: 0.75rem;
+			padding: 0.15rem 0.3rem;
+			border-radius: 0.25rem;
+			color: var(--clr-neutral-100);
+			margin-left: 0.5rem;
+		}
+
+		&-upper {
+			@include flex(space-between, center);
+			margin-bottom: var(--content-gap);
+
+			div {
+				@include flex($align: center);
+				gap: var(--content-gap);
+			}
+		}
+		&-content {
+			color: var(--clr-accent-500);
+		}
+
+		&-form {
+			@include flex($align: start);
+			gap: 1rem;
+			background: var(--clr-neutral-100);
+			padding: 1rem;
+			border-radius: 0.5rem;
+
+			&-content {
+				flex: 1;
+				padding: 0.5rem;
+				border-radius: 0.35rem;
+				min-height: 125px;
+				outline: none;
+				border: 1px solid var(--clr-primary-200);
+				resize: vertical;
+				max-height: 500px;
+
+				&:focus-visible {
+					border-color: var(--clr-primary-300);
+				}
+			}
+		}
+	}
+}

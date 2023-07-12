@@ -1,10 +1,8 @@
 import { useCookie } from '../hooks';
 
 export default function useAuth() {
-	const userId = useCookie({
-		key: 'user'
-	});
-	const isLoggedIn = !!userId;
+	const cookie = useCookie('user');
+	const isLoggedIn = !!cookie.read();
 
 	return isLoggedIn;
 }

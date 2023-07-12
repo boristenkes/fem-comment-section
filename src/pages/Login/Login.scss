@@ -8,16 +8,28 @@
 		padding: 3rem;
 		border-radius: 0.5rem;
 		font-family: var(--ff-primary);
-		width: min(50%, 500px);
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+		width: min(500px, 100%);
+		box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+			rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 
 		h1,
 		label,
-		input {
+		input[type='submit'] {
 			text-transform: capitalize;
+		}
+
+		.login-error {
+			color: red;
+			font-size: 1.05rem;
+			margin-bottom: 2rem;
+			text-align: center;
+
+			&::before,
+			&::after {
+				content: '\26A0';
+				margin-inline: 0.5rem;
+				font-size: 1.05rem;
+			}
 		}
 
 		.switch-form {
@@ -39,10 +51,24 @@
 	label {
 		display: grid;
 		margin-top: 2rem;
+
+		&.error {
+			@include pseudo($content: '\26A0') {
+				right: 1rem;
+				top: 50%;
+				transform: translateY(-20%);
+				font-size: 1.75rem;
+				color: var(--clr-secondary-500);
+			}
+
+			input {
+				border-bottom-color: var(--clr-secondary-500);
+			}
+		}
 	}
 	input {
 		background: inherit;
-		transition: border-color 250ms ease;
+		transition: border-color, background, 250ms ease;
 		border: 2px solid transparent;
 		border-bottom-color: var(--clr-primary-300);
 		border-radius: 0.25rem;
@@ -50,14 +76,23 @@
 		font-size: 1.25rem;
 
 		&:focus {
-			// background: var(--clr-primary-300);
+			background: var(--clr-primary-300);
+			border-bottom-color: var(--clr-primary-500);
 			outline: none;
-			border-color: var(--clr-primary-300);
+			// border-color: var(--clr-primary-300);
 		}
 		&[type='submit'] {
 			background: var(--clr-primary-500);
 			color: var(--clr-neutral-100);
 			margin-block: 2rem;
+		}
+	}
+
+	&__errors {
+		// margin-top: 2rem;
+
+		&-error {
+			color: var(--clr-secondary-500);
 		}
 	}
 }
