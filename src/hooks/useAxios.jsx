@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../api';
 
 export default function useAxios(endpoint) {
 	const API_URL = import.meta.env.VITE_API_URL;
@@ -61,5 +62,5 @@ export default function useAxios(endpoint) {
 		return cleanUp;
 	}, [endpoint]);
 
-	return { data, fetchError, isLoading };
+	return [data, fetchError, isLoading];
 }

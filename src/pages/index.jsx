@@ -1,2 +1,2 @@
-export { default as Comments } from './Comments/Comments';
+export { default as CommentSection } from './Comments/CommentSection';
 export { default as Login } from './Login/Login';

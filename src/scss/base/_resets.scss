@@ -20,7 +20,7 @@ body {
 
 body {
 	line-height: 1.5;
-	@include bg-img('./../assets/images/bg.svg', $attachment: fixed);
+	background-color: var(--clr-primary-100);
 }
 
 #root {

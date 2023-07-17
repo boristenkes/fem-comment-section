@@ -1,9 +1,10 @@
 import { useAuth } from '../../helpers';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useCookie, useFetch, useValidator } from '../../hooks';
+import { Navigate, redirect } from 'react-router-dom';
+import { useCookie, useValidator } from '../../hooks';
 import api from '../../api';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import './Login.scss';
+import DataContext from '../../context/DataContext';
 
 const defaultForm = {
 	login: [
@@ -84,15 +85,13 @@ const formRules = {
 };
 
 export default function Login() {
+	const { dbUsers } = useContext(DataContext);
 	const cookie = useCookie('user');
 	const isLoggedIn = useAuth();
-	const navigate = useNavigate();
 	const [page, setPage] = useState(sessionStorage.getItem('page') || 'login');
 	const [form, setForm] = useState(defaultForm);
 	const validate = useValidator(form, setForm, formRules, page);
-	const [error, setError] = useState(null);
-
-	const [dbUsers] = useFetch('/users');
+	const [loginError, setLoginError] = useState(null);
 
 	const handleInput = (index, fieldValue) => {
 		setForm(prevForm => {
@@ -133,7 +132,7 @@ export default function Login() {
 			switch (page) {
 				case 'register':
 					if (isUserFound)
-						return setError(
+						return setLoginError(
 							'User with this email or username already exists. Please choose another one.'
 						);
 
@@ -143,18 +142,20 @@ export default function Login() {
 						password: form[page].find(field => field.name === 'password').value
 					};
 
-					setError(null);
+					setLoginError(null);
 					api.post('/users', userData).then(resp => cookie.write(resp.data.id));
-					navigate('/');
+					redirect('/');
+					location.reload();
 					break;
 
 				case 'login':
 					if (!isUserFound)
-						return setError('Wrong email or password, please try again.');
+						return setLoginError('Wrong email or password, please try again.');
 
-					setError(null);
+					setLoginError(null);
 					cookie.write(user.id);
-					navigate('/');
+					redirect('/');
+					location.reload();
 					break;
 			}
 		}
@@ -207,7 +208,7 @@ export default function Login() {
 					value={page}
 				/>
 			</form>
-			{error && <p className='login-error'>{error}</p>}
+			{loginError && <p className='login-error'>{loginError}</p>}
 			<div className='switch-form'>
 				<p>{page === 'login' ? "Don't" : 'Already'} have an account?</p>
 				<button

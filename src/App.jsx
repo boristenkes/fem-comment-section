@@ -1,4 +1,4 @@
-import { Login, Comments } from './pages';
+import { Login, CommentSection } from './pages';
 import { Routes, Route } from 'react-router-dom';
 
 export default function App() {
@@ -7,7 +7,7 @@ export default function App() {
 			<Routes>
 				<Route
 					path='/'
-					element={<Comments />}
+					element={<CommentSection />}
 				/>
 				<Route
 					path='/login'
