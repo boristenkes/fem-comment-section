@@ -166,6 +166,7 @@ export default function Comment({
 					comment={data}
 					commentAuthor={author}
 					setReplies={setReplies}
+					setReplyMode={setReplyMode}
 				/>
 			)}
 		</>

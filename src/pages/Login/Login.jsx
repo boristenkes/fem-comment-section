@@ -1,10 +1,11 @@
 import { useAuth } from '../../helpers';
-import { Navigate, redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useCookie, useValidator } from '../../hooks';
 import api from '../../api';
-import { Fragment, useContext, useEffect, useState } from 'react';
-import './Login.scss';
+import { useContext, useEffect, useState } from 'react';
 import DataContext from '../../context/DataContext';
+import { Button, Input } from '../../components';
+import './Login.scss';
 
 const defaultForm = {
 	login: [
@@ -57,40 +58,18 @@ const defaultForm = {
 	]
 };
 
-const formRules = {
-	username: {
-		required: true,
-		noWhitespaces: true,
-		noNumbers: false,
-		noSpecials: true,
-		allLower: false,
-		allUpper: false,
-		min: 3,
-		max: 20
-	},
-	email: {
-		required: true
-	},
-	password: {
-		required: true,
-		numbers: true,
-		specialChars: true,
-		upperAndLower: true,
-		min: 5,
-		max: 30
-	},
-	confirmPass: {
-		required: true
-	}
-};
-
 export default function Login() {
-	const { dbUsers } = useContext(DataContext);
+	const { dbUsers, formRules } = useContext(DataContext);
 	const cookie = useCookie('user');
 	const isLoggedIn = useAuth();
 	const [page, setPage] = useState(sessionStorage.getItem('page') || 'login');
 	const [form, setForm] = useState(defaultForm);
-	const validate = useValidator(form, setForm, formRules, page);
+	const validate = useValidator({
+		form: form,
+		setForm: setForm,
+		rules: formRules,
+		page: page
+	});
 	const [loginError, setLoginError] = useState(null);
 
 	const handleInput = (index, fieldValue) => {
@@ -123,7 +102,7 @@ export default function Login() {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-		const isValid = validate();
+		const isValid = validate.validateForm();
 
 		if (isValid) {
 			const user = findUser();
@@ -143,9 +122,11 @@ export default function Login() {
 					};
 
 					setLoginError(null);
-					api.post('/users', userData).then(resp => cookie.write(resp.data.id));
-					redirect('/');
-					location.reload();
+					api.post('/users', userData).then(resp => {
+						cookie.write(resp.data.id);
+						location.reload();
+					});
+
 					break;
 
 				case 'login':
@@ -154,7 +135,6 @@ export default function Login() {
 
 					setLoginError(null);
 					cookie.write(user.id);
-					redirect('/');
 					location.reload();
 					break;
 			}
@@ -175,38 +155,23 @@ export default function Login() {
 				noValidate
 			>
 				{form[page].map((field, index) => (
-					<Fragment key={field.name}>
-						<label
-							htmlFor={field.name}
-							className={!!field.errors.length ? 'error' : ''}
-						>
-							{field.label}
-							<input
-								type={field.type}
-								id={field.name}
-								value={field.value}
-								onChange={e => handleInput(index, e.target.value)}
-								autoComplete='off'
-							/>
-						</label>
-						{!!field.errors.length && (
-							<ul className='form__errors'>
-								{field.errors.map((error, index) => (
-									<li
-										key={`error-${index + 1}`}
-										className='form__errors-error'
-									>
-										{error}
-									</li>
-								))}
-							</ul>
-						)}
-					</Fragment>
+					<Input
+						key={field.name}
+						label={field.label}
+						type={field.type}
+						value={field.value}
+						setValue={e => handleInput(index, e.target.value)}
+						isValid={!field.errors.length}
+						errors={field.errors}
+					/>
 				))}
-				<input
+				<Button
 					type='submit'
-					value={page}
-				/>
+					variant='contained'
+					style={{ marginBlock: '2rem' }}
+				>
+					{page}
+				</Button>
 			</form>
 			{loginError && <p className='login-error'>{loginError}</p>}
 			<div className='switch-form'>

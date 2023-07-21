@@ -1,0 +1,43 @@
+@use '../../scss/abstracts/' as *;
+
+.label {
+	display: grid;
+	margin-top: 2rem;
+	text-transform: capitalize;
+
+	&.error {
+		@include pseudo($content: '\26A0') {
+			right: 1rem;
+			top: 50%;
+			transform: translateY(-20%);
+			font-size: 1.75rem;
+			color: var(--clr-secondary-500);
+		}
+
+		input {
+			border-bottom-color: var(--clr-secondary-500);
+		}
+	}
+}
+.input {
+	background: inherit;
+	transition: border-color, background, 250ms ease;
+	border: 2px solid transparent;
+	border-bottom-color: var(--clr-primary-300);
+	border-radius: 0.25rem;
+	padding: 0.5rem;
+	font-size: 1.25rem;
+
+	&:focus {
+		background: var(--clr-primary-300);
+		border-bottom-color: var(--clr-primary-500);
+		outline: none;
+	}
+}
+button[type='submit'] {
+	text-transform: capitalize;
+	background: var(--clr-primary-500);
+	color: var(--clr-neutral-100);
+	justify-content: center;
+	// font-size: 1.25rem;
+}

@@ -1,9 +1,12 @@
 @use '../abstracts/' as *;
 
 .head-text {
-	font-size: 2rem;
-	font-family: var(--ff-heading);
-	font-weight: var(--fw-bold);
+	font: {
+		size: 2rem;
+		family: var(--ff-heading);
+		weight: var(--fw-bold);
+	}
+	text-transform: capitalize;
 }
 
 .body-text {

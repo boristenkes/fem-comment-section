@@ -1,11 +1,10 @@
 import { useAuth } from '../../helpers';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useCookie } from '../../hooks';
+import { Navigate } from 'react-router-dom';
 import './Comments.scss';
 import { useContext, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Loader, Button } from '../../components';
+import { Loader, Button, UserMenu } from '../../components';
 import api from '../../api';
 import defaultAvatar from '../../assets/images/default.webp';
 import Comment from './Comment';
@@ -15,21 +14,14 @@ dayjs.extend(relativeTime);
 
 export default function CommentSection() {
 	const isLoggedIn = useAuth();
-	const cookie = useCookie('user');
-	const navigate = useNavigate();
 	const [commentContent, setCommentContent] = useState('');
+	const maxLength = 10000;
 
 	const { dbComments, commentsLoading, dbUsers, currentUser } =
 		useContext(DataContext);
 
 	const [pageComments, setPageComments] = useState(dbComments);
 	useEffect(() => setPageComments(dbComments), [dbComments]);
-
-	const logout = () => {
-		cookie.destroy();
-		navigate('/login');
-		location.reload();
-	};
 
 	const addComment = e => {
 		e.preventDefault();
@@ -58,50 +50,52 @@ export default function CommentSection() {
 			replace
 		/>
 	) : (
-		<main className='comment-section'>
-			{commentsLoading ? (
-				<Loader />
-			) : (
-				<>
-					{pageComments.map(comment => (
-						<Comment
-							key={`comment-${comment.id}`}
-							data={comment}
-							author={
-								dbUsers.find(user => user.id === comment.authorId) ||
-								'Deleted User'
-							}
-							setPageComments={setPageComments}
-						/>
-					))}
-					<button onClick={logout}>Logout</button>
-					<form
-						className='comment-form'
-						onSubmit={addComment}
-					>
-						<img
-							className='comment-avatar'
-							width={50}
-							height={50}
-							src={currentUser?.avatar || defaultAvatar}
-							alt={currentUser?.username}
-						/>
-						<textarea
-							className='comment-form-content'
-							value={commentContent}
-							onChange={e => setCommentContent(e.target.value)}
-							placeholder='Add a comment...'
-							maxLength={10000}
-						/>
-						<Button
-							type='submit'
-							variant='contained'
+		<>
+			<UserMenu />
+			<main className='comment-section'>
+				{commentsLoading ? (
+					<Loader />
+				) : (
+					<>
+						{pageComments.map(comment => (
+							<Comment
+								key={`comment-${comment.id}`}
+								data={comment}
+								author={
+									dbUsers.find(user => user.id === comment.authorId) ||
+									'Deleted User'
+								}
+								setPageComments={setPageComments}
+							/>
+						))}
+						<form
+							className='comment-form'
+							onSubmit={addComment}
 						>
-							Send
-						</Button>
-					</form>
-				</>
-			)}
-		</main>
+							<img
+								className='comment-avatar'
+								width={50}
+								height={50}
+								src={currentUser?.avatar || defaultAvatar}
+								alt={currentUser?.username}
+							/>
+							<textarea
+								className='comment-form-content'
+								value={commentContent}
+								onChange={e => setCommentContent(e.target.value)}
+								placeholder='Add a comment...'
+								maxLength={10000}
+							/>
+							<Button
+								type='submit'
+								variant='contained'
+							>
+								Send
+							</Button>
+						</form>
+					</>
+				)}
+			</main>
+		</>
 	);
 }

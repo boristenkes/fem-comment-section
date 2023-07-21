@@ -1,0 +1,80 @@
+@use '../../scss/abstracts/' as *;
+
+.btn {
+	@include flex(center, center);
+	gap: 0.35rem;
+	font-family: var(--ff-primary);
+	border-radius: 0.25rem;
+	border: none;
+	font-weight: var(--fw-medium);
+	transition: background, color, border-color, 0.15s ease;
+
+	&[data-variant='text'] {
+		border: none;
+		background: none;
+
+		&[data-color='primary'] {
+			color: var(--clr-primary-500);
+
+			&:hover,
+			&:focus-visible {
+				color: var(--clr-primary-300);
+			}
+		}
+		&[data-color='danger'] {
+			color: var(--clr-secondary-500);
+
+			&:hover,
+			&:focus-visible {
+				color: var(--clr-secondary-200);
+			}
+		}
+	}
+	&[data-variant='contained'] {
+		border: 2px solid;
+		padding: 0.5rem 1.75rem;
+		border-radius: 0.5rem;
+
+		&[data-color='primary'] {
+			border-color: var(--clr-primary-500);
+			background: var(--clr-primary-500);
+			color: var(--clr-neutral-100);
+
+			&:hover,
+			&:focus-visible {
+				background: var(--clr-primary-300);
+				border-color: var(--clr-primary-300);
+			}
+		}
+		&[data-color='danger'] {
+			border-color: var(--clr-secondary-500);
+			background: var(--clr-secondary-500);
+			color: var(--clr-neutral-100);
+
+			&:hover,
+			&:focus-visible {
+				background: var(--clr-secondary-200);
+				border-color: var(--clr-secondary-200);
+			}
+		}
+	}
+	&[data-variant='outlined'] {
+		border: 2px solid;
+
+		&[data-color='primary'] {
+			border-color: var(--clr-primary-500);
+			color: var(--clr-primary-500);
+			padding: 0.5rem 1.75rem;
+
+			&:hover,
+			&:focus-visible {
+				border-color: var(--clr-primary-300);
+				color: var(--clr-primary-300);
+			}
+		}
+	}
+
+	&[data-color='primary'] {
+		color: var(--clr-primary-500);
+	}
+}

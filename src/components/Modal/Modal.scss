@@ -1,0 +1,19 @@
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: transform, opacity, visibility, 500ms ease;
+	isolation: isolate;
+	z-index: 100;
+
+	&.open {
+		box-shadow: 0px -100vmax 0px 1000vmax rgba(0, 0, 0, 0.65),
+			rgba(0, 0, 0, 0.65) 0px 3px 8px;
+	}
+	&:not(.open) {
+		opacity: 0;
+		transform: translate(-50%, calc(-50% + 1rem));
+		visibility: hidden;
+	}
+}

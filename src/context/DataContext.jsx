@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { useAxios, useCookie, useFetch } from '../hooks';
+import { useAxios, useCookie } from '../hooks';
 
 const DataContext = createContext({});
 
@@ -9,6 +9,32 @@ export const DataProvider = ({ children }) => {
 	const [dbComments, commentsFetchError, commentsLoading] =
 		useAxios('/comments');
 	const currentUser = dbUsers.find(user => user.id === cookie.read());
+	const formRules = {
+		username: {
+			required: true,
+			noWhitespaces: true,
+			noNumbers: false,
+			noSpecials: true,
+			allLower: false,
+			allUpper: false,
+			min: 3,
+			max: 20
+		},
+		email: {
+			required: true
+		},
+		password: {
+			required: true,
+			numbers: true,
+			specialChars: true,
+			upperAndLower: true,
+			min: 5,
+			max: 30
+		},
+		confirmPass: {
+			required: true
+		}
+	};
 
 	return (
 		<DataContext.Provider
@@ -19,7 +45,8 @@ export const DataProvider = ({ children }) => {
 				currentUser,
 				dbComments,
 				commentsFetchError,
-				commentsLoading
+				commentsLoading,
+				formRules
 			}}
 		>
 			{children}
