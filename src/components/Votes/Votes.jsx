@@ -34,12 +34,19 @@ export default function Votes({ comment }) {
 		newVotes
 	) => {
 		try {
-			await api.put(`/users/${currentUser.id}`, {
-				upvotedComments: newUpvotedComments,
-				downvotedComments: newDownvotedComments
-			});
+			await api
+				.put(`/users/${currentUser.id}`, {
+					upvotedComments: newUpvotedComments,
+					downvotedComments: newDownvotedComments
+				})
+				.then(() => {
+					setUpvotedComments(newUpvotedComments);
+					setDownvotedComments(newDownvotedComments);
+				});
 
-			await api.put(`/comments/${comment.id}`, { upvotes: newVotes });
+			await api
+				.put(`/comments/${comment.id}`, { upvotes: newVotes })
+				.then(() => setVotes(newVotes));
 		} catch (error) {
 			console.error('Error updating database:', error);
 		}
@@ -71,9 +78,9 @@ export default function Votes({ comment }) {
 				// Add one vote
 				newVotes++;
 			}
-			setUpvotedComments(newUpvotedComments);
-			setDownvotedComments(newDownvotedComments);
-			setVotes(newVotes);
+			// setUpvotedComments(newUpvotedComments);
+			// setDownvotedComments(newDownvotedComments);
+			// setVotes(newVotes);
 
 			handleVote(newUpvotedComments, newDownvotedComments, newVotes);
 		}
@@ -105,9 +112,9 @@ export default function Votes({ comment }) {
 				// Remove one vote
 				newVotes--;
 			}
-			setUpvotedComments(newUpvotedComments);
-			setDownvotedComments(newDownvotedComments);
-			setVotes(newVotes);
+			// setUpvotedComments(newUpvotedComments);
+			// setDownvotedComments(newDownvotedComments);
+			// setVotes(newVotes);
 
 			handleVote(newUpvotedComments, newDownvotedComments, newVotes);
 		}

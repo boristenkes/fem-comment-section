@@ -20,6 +20,14 @@ export default function UserMenu() {
 	const [editUsername, setEditUsername] = useState(currentUser?.username || '');
 	const [editEmail, setEditEmail] = useState(currentUser?.email || '');
 	const [editPassword, setEditPassword] = useState(currentUser?.password || '');
+	const [isAvatarValid, setIsAvatarValid] = useState(false);
+
+	const [usernameErrors, setUsernameErrors] = useState([]);
+	const [emailErrors, setEmailErrors] = useState([]);
+	const [passwordErrors, setPasswordErrors] = useState([]);
+
+	const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
 	const validate = useValidator({ rules: formRules });
 
 	useEffect(() => {
@@ -30,40 +38,50 @@ export default function UserMenu() {
 	}, [currentUser]);
 
 	const deleteAccount = () => {
-		if (confirm('Sure, sure?')) {
-			api
-				.delete(`/users/${currentUser.id}`)
-				.then(() => {
-					cookie.destroy();
-					location.reload();
-					alert('Account successfully deleted.');
-				})
-				.catch(err => {
-					alert('Error deleting your account. Check console for details');
-					console.error(err);
-				});
-		}
+		api
+			.delete(`/users/${currentUser.id}`)
+			.then(() => {
+				cookie.destroy();
+				location.reload();
+				alert('Account successfully deleted.');
+			})
+			.catch(err => {
+				alert('Error deleting your account. Check console for details');
+				console.error(err);
+			});
+		setOpenDeleteModal(false);
 	};
 
 	const editAccount = () => {
-		const isUrlValid = new URL(editAvatar);
-		if (!isUrlValid) return;
+		if (!isAvatarValid) return;
 
-		const editedData = {};
-		if (editAvatar !== currentUser?.avatar) editedData.avatar = editAvatar;
-		if (editUsername !== currentUser?.username)
-			editedData.username = editUsername;
-		if (editEmail !== currentUser?.email) editedData.email = editEmail;
-		if (editPassword !== currentUser?.password)
-			editedData.password = editPassword;
+		const [isUsernameValid, usernameErrors] = validate.username(editUsername);
+		const [isEmailValid, emailErrors] = validate.email(editEmail);
+		const [isPasswordValid, passwordErrors] = validate.password(editPassword);
 
-		const noChanges = Object.keys(editedData).length === 0;
+		const isEverythingValid =
+			isUsernameValid && isEmailValid && isPasswordValid;
 
-		if (noChanges) return;
+		if (isEverythingValid) {
+			const editedData = {};
+			if (editAvatar !== currentUser?.avatar) editedData.avatar = editAvatar;
+			if (editUsername !== currentUser?.username)
+				editedData.username = editUsername;
+			if (editEmail !== currentUser?.email) editedData.email = editEmail;
+			if (editPassword !== currentUser?.password)
+				editedData.password = editPassword;
 
-		api
-			.put(`/users/${currentUser?.id}`, editedData)
-			.then(() => location.reload());
+			const noChanges = Object.keys(editedData).length === 0;
+
+			if (!noChanges)
+				return api
+					.put(`/users/${currentUser?.id}`, editedData)
+					.then(() => location.reload());
+		}
+
+		if (!isUsernameValid) setUsernameErrors(usernameErrors);
+		if (!isEmailValid) setEmailErrors(emailErrors);
+		if (!isPasswordValid) setPasswordErrors(passwordErrors);
 	};
 
 	const logout = () => {
@@ -104,7 +122,7 @@ export default function UserMenu() {
 						color='danger'
 						startIcon={<DeleteIcon />}
 						variant='contained'
-						onClick={deleteAccount}
+						onClick={() => setOpenDeleteModal(true)}
 					>
 						Delete account
 					</Button>
@@ -124,6 +142,7 @@ export default function UserMenu() {
 				<form
 					className='edit-modal-form'
 					onSubmit={editAccount}
+					noValidate
 				>
 					<div className='edit-modal-avatar-wrapper'>
 						<img
@@ -132,10 +151,8 @@ export default function UserMenu() {
 							width={72}
 							height={72}
 							className='edit-modal-avatar'
-							onError={e => {
-								e.target.onerror = null; // Reset the onerror event handler to avoid potential infinite loops
-								e.target.src = defaultAvatar; // Set a fallback image if the specified avatar fails to load
-							}}
+							onError={() => setIsAvatarValid(false)}
+							onLoad={() => setIsAvatarValid(true)}
 						/>
 						<Input
 							label='Avatar'
@@ -151,21 +168,21 @@ export default function UserMenu() {
 						type='text'
 						value={editUsername}
 						setValue={e => setEditUsername(e.target.value)}
-						errors={[]}
+						errors={usernameErrors}
 					/>
 					<Input
 						label='Email'
 						type='email'
 						value={editEmail}
 						setValue={e => setEditEmail(e.target.value)}
-						errors={[]}
+						errors={emailErrors}
 					/>
 					<Input
 						label='Password'
 						type='password'
 						value={editPassword}
 						setValue={e => setEditPassword(e.target.value)}
-						errors={[]}
+						errors={passwordErrors}
 					/>
 					<div className='edit-modal-buttons'>
 						<Button
@@ -184,7 +201,30 @@ export default function UserMenu() {
 					</div>
 				</form>
 			</Modal>
-			<Modal className='delete-modal'></Modal>
+			<Modal
+				className='delete-modal'
+				modalOpen={openDeleteModal}
+			>
+				<h2>Delete Account</h2>
+				<p>
+					Are you sure you want to delete your account? This can not be undone.
+				</p>
+				<div className='buttons'>
+					<Button
+						variant='contained'
+						onClick={() => setOpenDeleteModal(false)}
+					>
+						No, cancel
+					</Button>
+					<Button
+						variant='contained'
+						color='danger'
+						onClick={deleteAccount}
+					>
+						Yes, delete
+					</Button>
+				</div>
+			</Modal>
 		</div>
 	);
 }

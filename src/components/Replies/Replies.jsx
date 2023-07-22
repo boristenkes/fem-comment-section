@@ -7,6 +7,7 @@ export default function Replies({ replyTo, replies, setReplies }) {
 
 	return (
 		<div className='comment-reply-wrapper'>
+			<div className='line' />
 			<div className='comment-section'>
 				{replies.map(reply => (
 					<Reply

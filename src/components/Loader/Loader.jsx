@@ -42,7 +42,7 @@ const round = keyframes`
 `;
 
 const Loader = styled.span`
-	color: var(--clr-neutral-100);
+	color: var(--clr-primary-500);
 	font-size: 45px;
 	text-indent: -9999em;
 	overflow: hidden;

@@ -7,7 +7,7 @@ import {
 import api from '../../api';
 import defaultAvatar from '../../assets/images/default.webp';
 import dayjs from 'dayjs';
-import { Button, Votes, ReplyForm, Replies } from '../../components';
+import { Button, Votes, ReplyForm, Replies, Modal } from '../../components';
 import { useContext } from 'react';
 import DataContext from '../../context/DataContext';
 
@@ -19,27 +19,23 @@ export default function Comment({
 }) {
 	const { currentUser } = useContext(DataContext);
 	const [editMode, setEditMode] = useState(false);
+	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [replyMode, setReplyMode] = useState(false);
 	const [edited, setEdited] = useState(data.content);
 	const [replies, setReplies] = useState(data.replies || []);
 
 	// TODO: Responiveness
 	const deleteComment = () => {
-		// TODO: Custom modal to confirm deleting comments
-		if (confirm('Sure?')) {
-			setPageComments(prevComments =>
-				prevComments.filter(comment => comment.id !== data.id)
+		setPageComments(prevComments =>
+			prevComments.filter(comment => comment.id !== data.id)
+		);
+		api.delete(`/comments/${data.id}`).catch(err => {
+			alert(
+				'An error occurred deleting your comment. Please check console for more details.'
 			);
-			api
-				.delete(`/comments/${data.id}`)
-				.then(() => alert('Comment successfully deleted'))
-				.catch(err => {
-					alert(
-						'An error occurred deleting your comment. Please check console for more details.'
-					);
-					console.error(err);
-				});
-		}
+			console.error(err);
+		});
+		setOpenDeleteModal(false);
 	};
 
 	const editComment = () => {
@@ -95,7 +91,7 @@ export default function Comment({
 								<>
 									<Button
 										startIcon={<DeleteIcon />}
-										onClick={deleteComment}
+										onClick={() => setOpenDeleteModal(prev => !prev)}
 										color='danger'
 									>
 										Delete
@@ -169,6 +165,31 @@ export default function Comment({
 					setReplyMode={setReplyMode}
 				/>
 			)}
+			<Modal
+				className='delete-modal'
+				modalOpen={openDeleteModal}
+			>
+				<h2>Delete Comment</h2>
+				<p>
+					Are you sure you want to delete this comment? This will remove comment
+					and can't be undone.
+				</p>
+				<div className='buttons'>
+					<Button
+						variant='contained'
+						onClick={() => setOpenDeleteModal(false)}
+					>
+						No, cancel
+					</Button>
+					<Button
+						variant='contained'
+						color='danger'
+						onClick={deleteComment}
+					>
+						Yes, delete
+					</Button>
+				</div>
+			</Modal>
 		</>
 	);
 }

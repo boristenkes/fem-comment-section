@@ -9,7 +9,7 @@ export default function Modal({
 	return (
 		<>
 			<div
-				className='modal-overlay'
+				className={`modal-overlay ${modalOpen ? 'open' : ''}`}
 				{...props}
 			/>
 			<div className={`modal ${className} ${modalOpen ? 'open' : ''}`}>

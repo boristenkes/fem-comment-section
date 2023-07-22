@@ -88,13 +88,13 @@ export default function useValidator({ form, setForm, rules, page }) {
 			if (username.required && !value.trim())
 				return [false, ['Username is required.']];
 
-			if (value < username.min || value > username.max) {
+			if (value.length < username.min || value.length > username.max) {
 				isValid = false;
 				errors.push(
 					`Username must be between ${username.min} and ${username.max} characters long.`
 				);
 			}
-			if (username.noWhitespaces && value.contains(' ')) {
+			if (username.noWhitespaces && value.includes(' ')) {
 				isValid = false;
 				errors.push('Username must not contain whitespaces.');
 			}
@@ -124,6 +124,8 @@ export default function useValidator({ form, setForm, rules, page }) {
 				return [false, ['Email is required.']];
 
 			if (!regex.email.test(value)) return [false, ['Email invalid.']];
+
+			return [true, []];
 		},
 		password: function (value) {
 			let isValid = true;
@@ -132,6 +134,12 @@ export default function useValidator({ form, setForm, rules, page }) {
 
 			if (password.required && !value.trim())
 				return [false, ['Password is required.']];
+			if (value.length < password.min || value.length > password.max) {
+				isValid = false;
+				errors.push(
+					`Password must be between ${password.min} and ${password.max} characters long`
+				);
+			}
 			if (password.numbers && !regex.numbers.test(value)) {
 				isValid = false;
 				errors.push('Password must contain numbers.');
@@ -147,85 +155,14 @@ export default function useValidator({ form, setForm, rules, page }) {
 			return [isValid, errors];
 		},
 		confirmPass: function (value) {
-			let isValid = true;
-			const errors = [];
 			const confirmPass = rules.confirmPass;
 
 			if (confirmPass.required && !value.trim())
 				return [false, ['Confirm Password is required.']];
-			if (value !== form[page].find(f => f.name === field.matching).value)
+			if (value !== form[page].find(f => f.name === confirmPass.matching).value)
 				return [false, ["Passwords aren't matching"]];
+
+			return [true, []];
 		}
 	};
-
-	// return () => {
-	// 	const updatedForm = { ...form };
-	// 	updatedForm[page].forEach(field => (field.errors = []));
-
-	// 	for (const field of updatedForm[page]) {
-	// 		if (rules[field.name].required && !field.value.trim()) {
-	// 			field.errors.push(`${field.label.capitalize()} is required`);
-	// 			continue;
-	// 		}
-
-	// 		const [min, max] = [rules[field.name]?.min, rules[field.name]?.max];
-	// 		if (field.value.length < min || field.value.length > max)
-	// 			field.errors.push(
-	// 				`${field.label.capitalize()} must be between ${min} and ${max} characters long`
-	// 			);
-
-	// 		switch (field.name) {
-	// 			case 'username':
-	// 				if (rules.username.noWhitespaces && field.value.includes(' '))
-	// 					field.errors.push('Username must not contain whitespaces');
-	// 				if (rules.username.noSpecials && regex.specialChars.test(field.value))
-	// 					field.errors.push('Username must not contain special characters');
-	// 				if (rules.username.noNumbers && regex.numbers.test(field.value))
-	// 					field.errors.push('Username must not contain numbers');
-	// 				if (
-	// 					rules.username.allLower &&
-	// 					field.value !== field.value.toLowerCase()
-	// 				)
-	// 					field.errors.push('Username must be all lowercase');
-	// 				if (
-	// 					rules.username.allUpper &&
-	// 					field.value !== field.value.toUpperCase()
-	// 				)
-	// 					field.errors.push('Username must be all uppercase');
-	// 				break;
-
-	// 			case 'email':
-	// 				if (!regex.email.test(field.value))
-	// 					field.errors.push('Invalid email address');
-	// 				break;
-
-	// 			case 'password':
-	// 				if (
-	// 					rules.password.upperAndLower &&
-	// 					!regex.upperAndLower.test(field.value)
-	// 				)
-	// 					field.errors.push('Password must contain upper and lower case');
-	// 				if (rules.password.numbers && !regex.numbers.test(field.value))
-	// 					field.errors.push('Password must contain numbers');
-	// 				if (
-	// 					rules.password.specialChars &&
-	// 					!regex.specialChars.test(field.value)
-	// 				)
-	// 					field.errors.push('Password must contain special characters');
-	// 				break;
-	// 			case 'confirmPass':
-	// 				if (
-	// 					field.value !==
-	// 					form[page].find(f => f.name === field.matching).value
-	// 				)
-	// 					field.errors.push("Passwords aren't matching");
-	// 				break;
-	// 		}
-	// 	}
-
-	// 	setForm(updatedForm);
-	// 	const isFormValid = form[page].every(field => !field.errors.length);
-
-	// 	return isFormValid;
-	// };
 }

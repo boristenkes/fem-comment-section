@@ -102,17 +102,42 @@
 
 			&-wrapper {
 				@include flex();
+
+				.line {
+					width: 3px;
+					min-height: 0;
+					margin-inline: 2rem;
+					border-radius: 1rem;
+					background: var(--clr-primary-300);
+					opacity: 0.5;
+					display: inline-block;
+				}
 			}
 		}
-		&-reply-wrapper::before {
-			content: '';
-			width: 3px;
-			min-height: 0;
-			margin-inline: 2rem;
-			border-radius: 1rem;
-			background: var(--clr-primary-300);
-			opacity: 0.5;
-			display: inline-block;
+	}
+
+	.delete-modal {
+		padding: 2rem;
+		border-radius: 0.5rem;
+		background: var(--clr-neutral-100);
+		width: min(400px, 100% - 1rem);
+		h2 {
+			color: var(--clr-accent-500);
+			font-weight: var(--fw-medium);
+			font-size: 1.5rem;
+		}
+
+		p {
+			margin-block: 1.5rem;
+			color: var(--clr-accent-200);
+			font-size: 1.1rem;
+		}
+		.buttons {
+			@include flex(space-between, center);
+
+			button {
+				text-transform: uppercase;
+			}
 		}
 	}
 }

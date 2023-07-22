@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import DataContext from '../../context/DataContext';
 import defaultAvatar from '../../assets/images/default.webp';
 import dayjs from 'dayjs';
-import { Button, ReplyForm } from '../../components';
+import { Button, Modal, ReplyForm } from '../../components';
 import {
 	FaTrash as DeleteIcon,
 	FaPencilAlt as EditIcon,
@@ -29,6 +29,7 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 		downvotedComments?.includes(data.id)
 	);
 	const [commentReplyingTo, setCommentReplyingTo] = useState(null);
+	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
 	useEffect(() => {
 		setCommentReplyingTo(dbComments.find(comment => comment.id === replyTo));
@@ -45,15 +46,12 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 	}, [currentUser]);
 
 	const deleteReply = async () => {
-		if (confirm('Sure?')) {
-			await setReplies(prevReplies => {
-				const updatedReplies = prevReplies.filter(
-					reply => reply.id !== data.id
-				);
-				api.put(`/comments/${replyTo}`, { replies: updatedReplies });
-				return updatedReplies;
-			});
-		}
+		await setReplies(prevReplies => {
+			const updatedReplies = prevReplies.filter(reply => reply.id !== data.id);
+			api.put(`/comments/${replyTo}`, { replies: updatedReplies });
+			return updatedReplies;
+		});
+		setOpenDeleteModal(false);
 	};
 
 	const editReply = async () => {
@@ -201,7 +199,7 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 								<>
 									<Button
 										startIcon={<DeleteIcon />}
-										onClick={deleteReply}
+										onClick={() => setOpenDeleteModal(true)}
 										color='danger'
 									>
 										Delete
@@ -269,6 +267,31 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 					setReplyMode={setReplyMode}
 				/>
 			)}
+			<Modal
+				className='delete-modal'
+				modalOpen={openDeleteModal}
+			>
+				<h2>Delete Comment</h2>
+				<p>
+					Are you sure you want to delete this comment? This will remove comment
+					and can't be undone.
+				</p>
+				<div className='buttons'>
+					<Button
+						variant='contained'
+						onClick={() => setOpenDeleteModal(false)}
+					>
+						No, cancel
+					</Button>
+					<Button
+						variant='contained'
+						color='danger'
+						onClick={deleteReply}
+					>
+						Yes, delete
+					</Button>
+				</div>
+			</Modal>
 		</>
 	);
 }
