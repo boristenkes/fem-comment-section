@@ -1,20 +1,22 @@
 @font-face {
 	font-family: 'Rubik';
-	src: url('./../assets/fonts/rubik-medium.woff2') format('woff2'),
-		url('./../assets/fonts/rubik-medium.woff') format('woff');
+	src: url('../../assets/fonts/rubik-medium.woff2') format('woff2'),
+		url('../../assets/fonts/rubik-medium.woff') format('woff');
+	font-display: swap;
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: 'Rubik';
+	src: url('../../assets/fonts/rubik-regular.woff2') format('woff2'),
+		url('../../assets/fonts/rubik-regular.woff') format('woff');
 	font-display: swap;
 }
 
 @font-face {
 	font-family: 'Rubik';
-	src: url('./../assets/fonts/rubik-regular.woff2') format('woff2'),
-		url('./../assets/fonts/rubik-regular.woff') format('woff');
+	src: url('../../assets/fonts/rubik-bold.woff2') format('woff2'),
+		url('../../assets/fonts/rubik-bold.woff') format('woff');
 	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Rubik';
-	src: url('./../assets/fonts/rubik-bold.woff2') format('woff2'),
-		url('./../assets/fonts/rubik-bold.woff') format('woff');
-	font-display: swap;
+	font-weight: 700;
 }
