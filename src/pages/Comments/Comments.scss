@@ -5,7 +5,7 @@
 	display: grid;
 	gap: var(--content-gap);
 	font-family: var(--ff-primary);
-	width: min(100%, 700px);
+	width: min(100% - 1rem, 700px);
 
 	.comment {
 		@include flex($align: start);
@@ -25,7 +25,7 @@
 			@include flex($direction: column);
 			background: var(--clr-primary-200);
 			padding: 0.5rem 0.75rem;
-			border-radius: 0.25rem;
+			border-radius: 0.5rem;
 			text-align: center;
 
 			&-button {
@@ -111,6 +111,10 @@
 					background: var(--clr-primary-300);
 					opacity: 0.5;
 					display: inline-block;
+
+					@include mq('tablet-small', max) {
+						margin-inline: 1rem;
+					}
 				}
 			}
 		}
@@ -138,6 +142,23 @@
 			button {
 				text-transform: uppercase;
 			}
+		}
+	}
+
+	.mobile-buttons {
+		@include flex(space-between, center);
+		margin-top: 0.5rem;
+
+		div:nth-child(2) {
+			@include flex();
+			gap: 1rem;
+		}
+
+		.comment-upvotes {
+			flex-direction: row-reverse;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
 		}
 	}
 }

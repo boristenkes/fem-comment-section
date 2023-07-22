@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import {
-	FaTrash as DeleteIcon,
-	FaPencilAlt as EditIcon,
-	FaReply as ReplyIcon
-} from 'react-icons/fa';
 import api from '../../api';
 import defaultAvatar from '../../assets/images/default.webp';
 import dayjs from 'dayjs';
-import { Button, Votes, ReplyForm, Replies, Modal } from '../../components';
+import {
+	Button,
+	Buttons,
+	Votes,
+	ReplyForm,
+	Replies,
+	Modal
+} from '../../components';
 import { useContext } from 'react';
 import DataContext from '../../context/DataContext';
 
@@ -17,14 +19,13 @@ export default function Comment({
 	setPageComments,
 	className = ''
 }) {
-	const { currentUser } = useContext(DataContext);
+	const { currentUser, isBigScreen } = useContext(DataContext);
 	const [editMode, setEditMode] = useState(false);
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [replyMode, setReplyMode] = useState(false);
 	const [edited, setEdited] = useState(data.content);
 	const [replies, setReplies] = useState(data.replies || []);
 
-	// TODO: Responiveness
 	const deleteComment = () => {
 		setPageComments(prevComments =>
 			prevComments.filter(comment => comment.id !== data.id)
@@ -39,7 +40,6 @@ export default function Comment({
 	};
 
 	const editComment = () => {
-		// TODO: Add error if not editable instead of just returning
 		if (!edited.trim()) return;
 		else if (data.content === edited.trim()) return setEditMode(false);
 
@@ -67,7 +67,7 @@ export default function Comment({
 	return (
 		<>
 			<article className={`comment ${className}`}>
-				<Votes comment={data} />
+				{isBigScreen && <Votes comment={data} />}
 				<div className='comment-content-wrapper'>
 					<div className='comment-upper'>
 						<div>
@@ -86,32 +86,14 @@ export default function Comment({
 								{dayjs(dayjs(data.createdAt).$d.getTime()).fromNow()}
 							</p>
 						</div>
-						<div>
-							{author?.id === currentUser?.id ? (
-								<>
-									<Button
-										startIcon={<DeleteIcon />}
-										onClick={() => setOpenDeleteModal(prev => !prev)}
-										color='danger'
-									>
-										Delete
-									</Button>
-									<Button
-										startIcon={<EditIcon />}
-										onClick={() => setEditMode(prev => !prev)}
-									>
-										Edit
-									</Button>
-								</>
-							) : (
-								<Button
-									startIcon={<ReplyIcon />}
-									onClick={() => setReplyMode(prev => !prev)}
-								>
-									Reply
-								</Button>
-							)}
-						</div>
+						{isBigScreen && (
+							<Buttons
+								author={author}
+								setOpenDeleteModal={setOpenDeleteModal}
+								setEditMode={setEditMode}
+								setReplyMode={setReplyMode}
+							/>
+						)}
 					</div>
 					<div className='comment-lower'>
 						{!editMode ? (
@@ -146,6 +128,17 @@ export default function Comment({
 									Update
 								</Button>
 							</form>
+						)}
+						{!isBigScreen && (
+							<div className='mobile-buttons'>
+								<Votes comment={data} />
+								<Buttons
+									author={author}
+									setOpenDeleteModal={setOpenDeleteModal}
+									setEditMode={setEditMode}
+									setReplyMode={setReplyMode}
+								/>
+							</div>
 						)}
 					</div>
 				</div>

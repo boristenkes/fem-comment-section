@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { useAxios, useCookie } from '../hooks';
+import { useMediaQuery } from 'react-responsive';
 
 const DataContext = createContext({});
 
@@ -9,6 +10,7 @@ export const DataProvider = ({ children }) => {
 	const [dbComments, commentsFetchError, commentsLoading] =
 		useAxios('/comments');
 	const currentUser = dbUsers.find(user => user.id === cookie.read());
+	const isBigScreen = useMediaQuery({ query: '(min-width: 600px)' });
 	const formRules = {
 		username: {
 			required: true,
@@ -46,6 +48,7 @@ export const DataProvider = ({ children }) => {
 				dbComments,
 				commentsFetchError,
 				commentsLoading,
+				isBigScreen,
 				formRules
 			}}
 		>

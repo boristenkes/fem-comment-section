@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import DataContext from '../../context/DataContext';
 import defaultAvatar from '../../assets/images/default.webp';
 import dayjs from 'dayjs';
-import { Button, Modal, ReplyForm } from '../../components';
+import { Button, Buttons, Modal, ReplyForm } from '../../components';
 import {
 	FaTrash as DeleteIcon,
 	FaPencilAlt as EditIcon,
@@ -11,7 +11,7 @@ import {
 import api from '../../api';
 
 export default function Reply({ replyTo, data, author, setReplies }) {
-	const { currentUser, dbComments } = useContext(DataContext);
+	const { currentUser, dbComments, isBigScreen } = useContext(DataContext);
 	const [editMode, setEditMode] = useState(false);
 	const [replyMode, setReplyMode] = useState(false);
 	const [votes, setVotes] = useState(data.upvotes);
@@ -157,25 +157,27 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 	return (
 		<>
 			<article className='comment comment-reply'>
-				<div className='comment-upvotes'>
-					<button
-						className='comment-upvotes-button'
-						onClick={upvote}
-						data-active={isUpvoted}
-					>
-						+
-					</button>
-					<span className='comment-upvotes-value | text-primary-500 fw-bold'>
-						{beautifyNumber(votes)}
-					</span>
-					<button
-						className='comment-upvotes-button'
-						onClick={downvote}
-						data-active={isDownvoted}
-					>
-						-
-					</button>
-				</div>
+				{isBigScreen && (
+					<div className='comment-upvotes'>
+						<button
+							className='comment-upvotes-button'
+							onClick={upvote}
+							data-active={isUpvoted}
+						>
+							+
+						</button>
+						<span className='comment-upvotes-value | text-primary-500 fw-bold'>
+							{beautifyNumber(votes)}
+						</span>
+						<button
+							className='comment-upvotes-button'
+							onClick={downvote}
+							data-active={isDownvoted}
+						>
+							-
+						</button>
+					</div>
+				)}
 				<div className='comment-content-wrapper'>
 					<div className='comment-upper'>
 						<div>
@@ -194,7 +196,15 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 								{dayjs(dayjs(data.createdAt).$d.getTime()).fromNow()}
 							</p>
 						</div>
-						<div>
+						{isBigScreen && (
+							<Buttons
+								author={author}
+								setOpenDeleteModal={setOpenDeleteModal}
+								setEditMode={setEditMode}
+								setReplyMode={setReplyMode}
+							/>
+						)}
+						{/* <div>
 							{author?.id === currentUser?.id ? (
 								<>
 									<Button
@@ -219,7 +229,7 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 									Reply
 								</Button>
 							)}
-						</div>
+						</div> */}
 					</div>
 					<div className='comment-lower'>
 						{!editMode ? (
@@ -255,6 +265,35 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 									Update
 								</Button>
 							</form>
+						)}
+						{!isBigScreen && (
+							<div className='mobile-buttons'>
+								<div className='comment-upvotes'>
+									<button
+										className='comment-upvotes-button'
+										onClick={upvote}
+										data-active={isUpvoted}
+									>
+										+
+									</button>
+									<span className='comment-upvotes-value | text-primary-500 fw-bold'>
+										{beautifyNumber(votes)}
+									</span>
+									<button
+										className='comment-upvotes-button'
+										onClick={downvote}
+										data-active={isDownvoted}
+									>
+										-
+									</button>
+								</div>
+								<Buttons
+									author={author}
+									setOpenDeleteModal={setOpenDeleteModal}
+									setEditMode={setEditMode}
+									setReplyMode={setReplyMode}
+								/>
+							</div>
 						)}
 					</div>
 				</div>
