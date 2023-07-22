@@ -27,7 +27,7 @@ Users should be able to:
 
 ### What I've added
 
-- Users have the option to create new accounts and log in to their existing ones. Once logged in, their session will remain active for 2 days, meaning they won't need to log in again during that period.
+- Users can create new accounts and log in to their existing accounts using a valid email address (the email address format must be valid but doesn't need to exist). Once logged in, their session will remain active for 2 days, meaning they won't need to log back in during that period.
 - Within the user's menu, there are convenient functionalities such as logout, delete account, and edit account.
 - It's important to note that all data is securely stored on [mockapi.io](https://mockapi.io)
 
