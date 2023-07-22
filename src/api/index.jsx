@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-	baseURL: import.meta.env.VITE_API_URL
+	baseURL: 'https://64a3e4cac3b509573b56b7ae.mockapi.io'
 });

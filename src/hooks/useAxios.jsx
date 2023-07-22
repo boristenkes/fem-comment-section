@@ -3,7 +3,6 @@ import axios from 'axios';
 import api from '../api';
 
 export default function useAxios(endpoint) {
-	const API_URL = import.meta.env.VITE_API_URL;
 	const [data, setData] = useState([]);
 	const [fetchError, setFetchError] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +14,7 @@ export default function useAxios(endpoint) {
 		(async () => {
 			setIsLoading(true);
 			try {
-				const response = await axios.get(API_URL + endpoint, {
+				const response = await api.get(endpoint, {
 					cancelToken: source.token
 				});
 				if (isMounted) {
