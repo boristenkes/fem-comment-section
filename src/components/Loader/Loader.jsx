@@ -43,7 +43,7 @@ const round = keyframes`
 
 const Loader = styled.span`
 	color: var(--clr-primary-500);
-	font-size: 45px;
+	font-size: ${props => props.fontSizes || '45px'};
 	text-indent: -9999em;
 	overflow: hidden;
 	width: 1em;

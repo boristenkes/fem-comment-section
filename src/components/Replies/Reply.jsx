@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import DataContext from '../../context/DataContext';
 import defaultAvatar from '../../assets/images/default.webp';
 import dayjs from 'dayjs';
-import { Button, Buttons, Modal, ReplyForm } from '../../components';
+import { Button, Buttons, Modal, ReplyForm, Loader } from '../../components';
 import {
 	FaTrash as DeleteIcon,
 	FaPencilAlt as EditIcon,
@@ -30,6 +30,7 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 	);
 	const [commentReplyingTo, setCommentReplyingTo] = useState(null);
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
+	const [votesUpdating, setVotesUpdating] = useState(false);
 
 	useEffect(() => {
 		setCommentReplyingTo(dbComments.find(comment => comment.id === replyTo));
@@ -71,19 +72,29 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 		newDownvotedComments,
 		newVotes
 	) => {
-		await api.put(`/users/${currentUser.id}`, {
-			upvotedComments: newUpvotedComments,
-			downvotedComments: newDownvotedComments
-		});
+		setVotesUpdating(true);
+		try {
+			await api.put(`/users/${currentUser.id}`, {
+				upvotedComments: newUpvotedComments,
+				downvotedComments: newDownvotedComments
+			});
 
-		await setReplies(prevReplies => {
-			const updatedReplies = prevReplies.map(reply =>
-				reply.id === data.id ? { ...reply, upvotes: newVotes } : reply
+			await setReplies(prevReplies => {
+				const updatedReplies = prevReplies.map(reply =>
+					reply.id === data.id ? { ...reply, upvotes: newVotes } : reply
+				);
+
+				api.put(`/comments/${replyTo}`, { replies: updatedReplies });
+				return updatedReplies;
+			});
+		} catch (error) {
+			alert(
+				'Error appeared updating votes. Check console for more information.'
 			);
-
-			api.put(`/comments/${replyTo}`, { replies: updatedReplies });
-			return updatedReplies;
-		});
+			console.error('Error updating database:', error);
+		} finally {
+			setVotesUpdating(false);
+		}
 	};
 
 	const upvote = () => {
@@ -159,6 +170,20 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 			<article className='comment comment-reply'>
 				{isBigScreen && (
 					<div className='comment-upvotes'>
+						{votesUpdating && (
+							<>
+								<span className='loader-overlay' />
+								<Loader
+									absolute
+									fontSizes='20px'
+									style={{
+										top: '30%',
+										left: '40%',
+										color: 'var(--clr-primary-100)'
+									}}
+								/>
+							</>
+						)}
 						<button
 							className='comment-upvotes-button'
 							onClick={upvote}
@@ -269,6 +294,20 @@ export default function Reply({ replyTo, data, author, setReplies }) {
 						{!isBigScreen && (
 							<div className='mobile-buttons'>
 								<div className='comment-upvotes'>
+									{votesUpdating && (
+										<>
+											<span className='loader-overlay' />
+											<Loader
+												absolute
+												fontSizes='20px'
+												style={{
+													top: '30%',
+													left: '40%',
+													color: 'var(--clr-primary-100)'
+												}}
+											/>
+										</>
+									)}
 									<button
 										className='comment-upvotes-button'
 										onClick={upvote}

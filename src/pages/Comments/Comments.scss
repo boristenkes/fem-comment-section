@@ -21,26 +21,26 @@
 			cursor: pointer;
 		}
 
-		&-upvotes {
-			@include flex($direction: column);
-			background: var(--clr-primary-200);
-			padding: 0.5rem 0.75rem;
-			border-radius: 0.5rem;
-			text-align: center;
+		// &-upvotes {
+		// 	@include flex($direction: column);
+		// 	background: var(--clr-primary-200);
+		// 	padding: 0.5rem 0.75rem;
+		// 	border-radius: 0.5rem;
+		// 	text-align: center;
 
-			&-button {
-				background: transparent;
-				color: var(--clr-primary-300);
-				font-size: 1.5rem;
-				font-weight: var(--fw-bold);
-				border: none;
+		// 	&-button {
+		// 		background: transparent;
+		// 		color: var(--clr-primary-300);
+		// 		font-size: 1.5rem;
+		// 		font-weight: var(--fw-bold);
+		// 		border: none;
 
-				&:hover,
-				&[data-active='true'] {
-					color: var(--clr-primary-500);
-				}
-			}
-		}
+		// 		&:hover,
+		// 		&[data-active='true'] {
+		// 			color: var(--clr-primary-500);
+		// 		}
+		// 	}
+		// }
 
 		&-content-wrapper {
 			flex: 1;

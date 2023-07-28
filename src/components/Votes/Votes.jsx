@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import api from '../../api';
 import DataContext from '../../context/DataContext';
+import { Loader } from '../../components';
+import './Votes.scss';
 
 export default function Votes({ comment }) {
 	const { currentUser } = useContext(DataContext);
@@ -17,6 +19,7 @@ export default function Votes({ comment }) {
 		downvotedComments?.includes(comment.id)
 	);
 	const [votes, setVotes] = useState(comment.upvotes);
+	const [votesUpdating, setVotesUpdating] = useState(false);
 
 	useEffect(() => {
 		setIsUpvoted(upvotedComments?.includes(comment.id));
@@ -33,6 +36,7 @@ export default function Votes({ comment }) {
 		newDownvotedComments,
 		newVotes
 	) => {
+		setVotesUpdating(true);
 		try {
 			await api
 				.put(`/users/${currentUser.id}`, {
@@ -48,7 +52,12 @@ export default function Votes({ comment }) {
 				.put(`/comments/${comment.id}`, { upvotes: newVotes })
 				.then(() => setVotes(newVotes));
 		} catch (error) {
+			alert(
+				'Error appeared updating votes. Check console for more information.'
+			);
 			console.error('Error updating database:', error);
+		} finally {
+			setVotesUpdating(false);
 		}
 	};
 
@@ -122,6 +131,20 @@ export default function Votes({ comment }) {
 
 	return (
 		<div className='comment-upvotes'>
+			{votesUpdating && (
+				<>
+					<span className='loader-overlay' />
+					<Loader
+						absolute
+						fontSizes='20px'
+						style={{
+							top: '30%',
+							left: '40%',
+							color: 'var(--clr-primary-100)'
+						}}
+					/>
+				</>
+			)}
 			<button
 				className='comment-upvotes-button'
 				data-active={isUpvoted}
